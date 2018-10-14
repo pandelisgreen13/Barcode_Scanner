@@ -48,6 +48,35 @@
         android:id="@+id/scannerRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/qrLinearLayout"
         android:layout_below="@+id/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/qrLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/qrEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:backgroundTint="@android:color/white" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/sendImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:src="@android:drawable/ic_menu_send" />
+    </LinearLayout>
 
 </RelativeLayout>

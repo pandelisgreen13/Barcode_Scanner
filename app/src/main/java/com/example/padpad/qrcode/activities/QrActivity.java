@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -22,12 +23,28 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
     @BindView(R.id.scannerRelativeLayout)
     RelativeLayout scannerRelativeLayout;
 
+    @BindView(R.id.qrEditText)
+    AppCompatEditText qrEditText;
+
     @OnClick(R.id.closeImageView)
     void onBackButtonClicked() {
         finish();
     }
 
+    @OnClick(R.id.sendImageView)
+    void onSendButtonClicked() {
+        if (qrEditText != null && qrEditText.getText() != null && !TextUtils.isEmpty(qrEditText.getText().toString())) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("barcode", qrEditText.getText().toString() + " : " + result.getText());
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        } else {
+            Toast.makeText(this, "Δεν έχεις συμπληρώσει το πεδίο", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private ZXingScannerView scannerView;
+    private Result result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +73,7 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
             return;
         }
 
-         if (TextUtils.isEmpty(result.getText())) {
+        if (TextUtils.isEmpty(result.getText())) {
             Toast.makeText(this, "Δεν πέτυχε η αναγνώριση", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -78,17 +95,10 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
     }
 
     private void onValidBarcode(final Result result) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (scannerView == null) {
-                    return;
-                }
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("barcode", result.getText());
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
-        }, 500);
+        if (scannerView == null) {
+            return;
+        }
+        this.result = result;
+        Toast.makeText(this, "Συμπλήρωσε το πεδίο", Toast.LENGTH_SHORT).show();
     }
 }

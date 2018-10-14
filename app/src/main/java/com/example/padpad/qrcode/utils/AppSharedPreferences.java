@@ -23,7 +23,7 @@ public class AppSharedPreferences {
 
     public static synchronized String getStringList(Context context) {
         SharedPreferences preferences = getSharedPreferences(context);
-        return preferences.getString(context.getString(R.string.preferences_list), "-");
+        return preferences.getString(context.getString(R.string.preferences_list), "");
     }
 
 }

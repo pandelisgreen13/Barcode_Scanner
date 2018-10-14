@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.padpad.qrcode.R;
 import com.example.padpad.qrcode.adapter.QrRecyclerViewAdapter;
+import com.example.padpad.qrcode.callback.MainCallback;
 import com.example.padpad.qrcode.utils.AppSharedPreferences;
 
 import java.text.SimpleDateFormat;
@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainCallback {
 
     public static final int PERMISSION_REQUEST = 200;
     public static final int REQUEST_CODE_QR = 1;
@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         saveList(qrCodeList);
     }
 
-    @OnClick(R.id.deleteFloatingActionButton)
+    @OnClick(R.id.deleteImageView
+    )
     void onDeleteButtonClicked() {
         deleteList();
     }
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 qrCodeList.add(bundle.getString("barcode"));
-                recyclerView.setAdapter(new QrRecyclerViewAdapter(this, qrCodeList));
+                recyclerView.setAdapter(new QrRecyclerViewAdapter(this, qrCodeList, this));
             }
         }
     }
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new QrRecyclerViewAdapter(this, qrCodeList));
+        recyclerView.setAdapter(new QrRecyclerViewAdapter(this, qrCodeList, this));
     }
 
     private void sendListToMail() {
@@ -134,19 +135,19 @@ public class MainActivity extends AppCompatActivity {
     private void deleteList() {
         if (qrCodeList == null || qrCodeList.isEmpty()) {
             Toast.makeText(this, "Δεν έχεις προστέσει κωδικούς", Toast.LENGTH_SHORT).show();
-            return ;
+            return;
         }
 
         qrCodeList = new ArrayList<>();
         AppSharedPreferences.setStringList(this, null);
         Toast.makeText(this, "Διαγράφηκε η λίστα", Toast.LENGTH_SHORT).show();
-        recyclerView.setAdapter(new QrRecyclerViewAdapter(this, null));
+        recyclerView.setAdapter(new QrRecyclerViewAdapter(this, null, this));
     }
 
     private void saveList(List<String> qrCodeList) {
         if (qrCodeList == null || qrCodeList.isEmpty()) {
             Toast.makeText(this, "Δεν έχεις προστέσει κωδικούς", Toast.LENGTH_SHORT).show();
-            return ;
+            return;
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -158,5 +159,16 @@ public class MainActivity extends AppCompatActivity {
 
         AppSharedPreferences.setStringList(this, stringBuilder.toString());
         Toast.makeText(this, "Αποθηκεύτηκε η λίστα", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateList(int position) {
+        if (qrCodeList == null || qrCodeList.isEmpty()) {
+            return;
+        }
+
+        if (position != qrCodeList.size()) {
+            qrCodeList.remove(position);
+        }
     }
 }

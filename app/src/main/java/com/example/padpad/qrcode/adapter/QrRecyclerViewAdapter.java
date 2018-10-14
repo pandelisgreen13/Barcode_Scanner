@@ -2,6 +2,7 @@ package com.example.padpad.qrcode.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.padpad.qrcode.R;
+import com.example.padpad.qrcode.callback.MainCallback;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ public class QrRecyclerViewAdapter extends RecyclerView.Adapter<QrRecyclerViewAd
 
     private Context context;
     private List<String> qrCodeList;
+    private MainCallback mainCallback;
 
-    public QrRecyclerViewAdapter(Context context, List<String> qrCodeList) {
+    public QrRecyclerViewAdapter(Context context, List<String> qrCodeList, MainCallback mainCallback) {
         this.context = context;
         this.qrCodeList = qrCodeList;
+        this.mainCallback = mainCallback;
     }
 
     @NonNull
@@ -32,8 +36,18 @@ public class QrRecyclerViewAdapter extends RecyclerView.Adapter<QrRecyclerViewAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull QrItemHolder holder, int position) {
+    public void onBindViewHolder(@NonNull QrItemHolder holder, final int position) {
         holder.qrTextView.setText(qrCodeList.get(position));
+
+        holder.deleteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mainCallback!=null){
+                    mainCallback.updateList(position);
+                    notifyItemRemoved(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -44,6 +58,9 @@ public class QrRecyclerViewAdapter extends RecyclerView.Adapter<QrRecyclerViewAd
     class QrItemHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.qrTextView)
         AppCompatTextView qrTextView;
+
+        @BindView(R.id.deleteImageView)
+        AppCompatImageView deleteImageView;
 
         QrItemHolder(View view) {
             super(view);
