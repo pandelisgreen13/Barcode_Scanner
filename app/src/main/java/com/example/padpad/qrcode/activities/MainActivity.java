@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.deleteFloatingActionButton)
     void onDeleteButtonClicked() {
-        saveList(new ArrayList<String>());
+        deleteList();
     }
 
     @OnClick(R.id.cameraImageView)
@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {
+                if (TextUtils.isEmpty(bundle.getString("barcode"))) {
+                    return;
+                }
                 qrCodeList.add(bundle.getString("barcode"));
                 recyclerView.setAdapter(new QrRecyclerViewAdapter(this, qrCodeList));
             }
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"test@email.com"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Barcodes:" + getCurrentTime());
         intent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
 
@@ -128,13 +131,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String saveList(List<String> list) {
-        if (list == null || list.isEmpty()) {
-            qrCodeList = new ArrayList<>();
-            AppSharedPreferences.setStringList(this, null);
-            Toast.makeText(this, "Διαγράφηκε η λίστα", Toast.LENGTH_SHORT).show();
-            recyclerView.setAdapter(new QrRecyclerViewAdapter(this, null));
-            return "";
+    private void deleteList() {
+        if (qrCodeList == null || qrCodeList.isEmpty()) {
+            Toast.makeText(this, "Δεν έχεις προστέσει κωδικούς", Toast.LENGTH_SHORT).show();
+            return ;
+        }
+
+        qrCodeList = new ArrayList<>();
+        AppSharedPreferences.setStringList(this, null);
+        Toast.makeText(this, "Διαγράφηκε η λίστα", Toast.LENGTH_SHORT).show();
+        recyclerView.setAdapter(new QrRecyclerViewAdapter(this, null));
+    }
+
+    private void saveList(List<String> qrCodeList) {
+        if (qrCodeList == null || qrCodeList.isEmpty()) {
+            Toast.makeText(this, "Δεν έχεις προστέσει κωδικούς", Toast.LENGTH_SHORT).show();
+            return ;
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -146,6 +158,5 @@ public class MainActivity extends AppCompatActivity {
 
         AppSharedPreferences.setStringList(this, stringBuilder.toString());
         Toast.makeText(this, "Αποθηκεύτηκε η λίστα", Toast.LENGTH_SHORT).show();
-        return stringBuilder.toString();
     }
 }
