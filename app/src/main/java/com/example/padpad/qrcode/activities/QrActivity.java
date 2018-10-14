@@ -1,4 +1,4 @@
-package com.example.padpad.qrcode;
+package com.example.padpad.qrcode.activities;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -9,14 +9,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.padpad.qrcode.R;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-import static com.example.padpad.qrcode.MainActivity.REQUEST_CODE_QR;
 
 public class QrActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
@@ -35,17 +34,7 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
         ButterKnife.bind(this);
-
-        scannerView = new ZXingScannerView(this);
-        scannerView.setAutoFocus(true);
-        scannerRelativeLayout.removeAllViews();
-        scannerRelativeLayout.addView(scannerView);
-        scannerRelativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        initLayout();
     }
 
     @Override
@@ -67,11 +56,25 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
             return;
         }
 
-        if (TextUtils.isEmpty(result.getText())) {
+         if (TextUtils.isEmpty(result.getText())) {
             Toast.makeText(this, "Δεν πέτυχε η αναγνώριση", Toast.LENGTH_SHORT).show();
             return;
         }
         onValidBarcode(result);
+    }
+
+    private void initLayout() {
+        scannerView = new ZXingScannerView(this);
+        scannerView.setAutoFocus(true);
+        scannerView.setAspectTolerance(0.5f);
+        scannerRelativeLayout.removeAllViews();
+        scannerRelativeLayout.addView(scannerView);
+        scannerRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void onValidBarcode(final Result result) {
@@ -86,6 +89,6 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
-        }, 2000);
+        }, 500);
     }
 }
