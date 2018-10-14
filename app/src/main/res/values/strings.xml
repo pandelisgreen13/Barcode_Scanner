@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">QrCode</string>
     <string name="qr">QR Code</string>
+    <string name="qr_title">Σκανάρετε το barcode</string>
 </resources>
