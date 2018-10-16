@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- put your fabric key-->
+    <meta-data
+        android:name="io.fabric.ApiKey"
+        android:value="" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +30,10 @@
         <activity
             android:name=".activities.QrActivity"
             android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7562e088504aa23d9b894c3caa6beb53ef96009a" />
     </application>
 
 </manifest>

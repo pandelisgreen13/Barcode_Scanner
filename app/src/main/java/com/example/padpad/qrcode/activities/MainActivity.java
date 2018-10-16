@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.padpad.qrcode.R;
 import com.example.padpad.qrcode.adapter.QrRecyclerViewAdapter;
 import com.example.padpad.qrcode.callback.MainCallback;
@@ -26,6 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements MainCallback {
 
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements MainCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Fabric.with(this, new Crashlytics());
         initLayout();
     }
 

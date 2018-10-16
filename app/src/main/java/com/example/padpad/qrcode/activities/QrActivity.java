@@ -28,7 +28,14 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
 
     @OnClick(R.id.closeImageView)
     void onBackButtonClicked() {
-        finish();
+        onBackPressed();
+    }
+
+    @OnClick(R.id.flashFloatingButton)
+    void onFlashButtonClicked() {
+        if (scannerView != null) {
+            scannerView.setFlash(enableFlash());
+        }
     }
 
     @OnClick(R.id.sendImageView)
@@ -45,6 +52,7 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
 
     private ZXingScannerView scannerView;
     private Result result;
+    private boolean isFlashEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,7 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
         setContentView(R.layout.activity_qr);
         ButterKnife.bind(this);
         initLayout();
+        //TODO open flash in qr and add fabric
     }
 
     @Override
@@ -80,25 +89,30 @@ public class QrActivity extends AppCompatActivity implements ZXingScannerView.Re
         onValidBarcode(result);
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
     private void initLayout() {
+        qrEditText.setEnabled(false);
         scannerView = new ZXingScannerView(this);
         scannerView.setAutoFocus(true);
         scannerView.setAspectTolerance(0.5f);
         scannerRelativeLayout.removeAllViews();
         scannerRelativeLayout.addView(scannerView);
-        scannerRelativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     private void onValidBarcode(final Result result) {
-        if (scannerView == null) {
+        if (scannerView == null || result == null) {
             return;
         }
         this.result = result;
+        qrEditText.setEnabled(true);
         Toast.makeText(this, "Συμπλήρωσε το πεδίο", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean enableFlash() {
+        return isFlashEnabled = !isFlashEnabled;
     }
 }
